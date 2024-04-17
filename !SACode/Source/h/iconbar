@@ -23,9 +23,9 @@ private:
       QuitItemMenuSelectionCommand(SALib::Wimp::Task& task) : m_task(task) {}
       virtual ~QuitItemMenuSelectionCommand(void) {}
 
-   private:
       virtual void Execute(void) const { m_task.RequestToQuit(); }
 
+   private:
       SALib::Wimp::Task& m_task;
    };
 
