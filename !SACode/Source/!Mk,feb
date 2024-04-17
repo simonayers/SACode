@@ -1,4 +1,24 @@
-|Temporary Obey make file, until build system properly developed.
+| Temporary Obey make file, until build system properly developed.
+
+WimpSlot -min 20M
+
+Dir <Obey$Dir>
 
 Echo Building !SACode...
+Echo
+Echo Compiling source files...
+Echo
+
+g++ -c -mlibscl -IOSLib: -ISALib: -o iconbar.o iconbar.cc
+g++ -c -mlibscl -IOSLib: -ISALib: -o sacode.o sacode.cc
+
+Echo Linking object files...
+Echo
+
+g++ -mlibscl -o ../!RunImage iconbar.o sacode.o -LOSLib: -LSALib:  -lOSLib32 -lSALib
+
+echo Deleting object files...
+| Wipe flags -> ~C = Do not prompt for confirmation
+Wipe o.* ~CFR~V
+
 Echo Done.

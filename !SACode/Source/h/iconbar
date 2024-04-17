@@ -1,0 +1,44 @@
+//
+// Class to deal with handling Icon Bar icon, and its associated menu.
+//
+
+#ifndef ICONBAR_H
+#define ICONBAR_H
+                          
+#include "salib/command.h"
+#include "salib/iconbar.h"
+#include "salib/mouseclickobserver.h"
+#include "salib/menuselectionobserver.h"
+#include "salib/task.h"
+
+class IconBarIcon {
+public:
+   IconBarIcon(SALib::Wimp::Task& task);
+   ~IconBarIcon(void);
+
+private:
+
+   class QuitItemMenuSelectionCommand : public SALib::Wimp::MenuSelectionCommandBase {
+   public:
+      QuitItemMenuSelectionCommand(SALib::Wimp::Task& task) : m_task(task) {}
+      virtual ~QuitItemMenuSelectionCommand(void) {}
+
+   private:
+      virtual void Execute(void) const { m_task.RequestToQuit(); }
+
+      SALib::Wimp::Task& m_task;
+   };
+
+   SALib::Wimp::Task& m_task;
+
+   QuitItemMenuSelectionCommand m_quitItemMenuSelectionCommand;
+   SALib::Wimp::NullCommand m_nullCommand;
+
+   SALib::Wimp::IconBar m_iconBarIcon;
+   SALib::Wimp::Menu m_iconBarMenu;
+
+   SALib::Wimp::IconBarMouseClickObserver m_iconBarMouseClickObserver;
+   SALib::Wimp::MenuSelectionObserver m_iconBarMenuSelectionObserver;
+};
+
+#endif // ICONBAR_H

@@ -1,0 +1,33 @@
+//
+// Implementation of IconBarIcon class.
+//
+
+#include "iconbar.h"
+
+IconBarIcon::IconBarIcon(SALib::Wimp::Task& task)
+   :   m_task(task),
+       m_quitItemMenuSelectionCommand(task),
+       m_iconBarIcon(SALib::Wimp::IconBar::RIGHT, "!sacode"),
+       m_iconBarMenu("SACode"),
+       m_iconBarMouseClickObserver(m_nullCommand, m_nullCommand, m_iconBarMenu),
+       m_iconBarMenuSelectionObserver(m_iconBarMenu)
+{
+   SALib::Wimp::MenuEntry::MenuFlagsBuilder quitItemMenuFlagsBuilder;
+   SALib::Wimp::IconFlagsBuilder quitItemIconFlagsBuilder;
+   SALib::Wimp::IconDataBuilder quitItemIconData("Quit");
+
+   quitItemMenuFlagsBuilder.SetLast().SetTitleIndirected();
+   quitItemIconFlagsBuilder.SetIconText().SetIconIndirected().SetIconFilled();
+
+   SALib::Wimp::MenuEntry quitItemMenuEntry(quitItemMenuFlagsBuilder, NULL, quitItemIconFlagsBuilder, quitItemIconData,
+                                            m_quitItemMenuSelectionCommand, m_quitItemMenuSelectionCommand);
+   m_iconBarMenu.AddEntry(quitItemMenuEntry);
+
+   m_task.GetEventDispatcher().GetMouseClickHandlers().Attach(m_iconBarMouseClickObserver);
+   m_task.GetEventDispatcher().GetMenuSelectionHandlers().Attach(m_iconBarMenuSelectionObserver);
+}
+
+IconBarIcon::~IconBarIcon(void)
+{
+   m_task.GetEventDispatcher().GetMouseClickHandlers().Detach(m_iconBarMouseClickObserver);
+}

@@ -1,0 +1,20 @@
+//
+//  Main application entry point.
+//
+
+#include "salib/task.h"
+
+#include "iconbar.h"
+
+int main(int argc, char* argv[])
+{
+   SALib::Wimp::Task task("SACode");
+
+   IconBarIcon iconBarIcon(task);
+
+   while (!task.RequestToQuitReceived()) {
+      task.ProcessMessages();
+   }
+
+   return 0;
+}
