@@ -2,10 +2,11 @@
 // Class to deal with handling Icon Bar icon, and its associated menu.
 //
 
-#ifndef ICONBAR_H
-#define ICONBAR_H
-                          
+#ifndef SACODE_ICONBAR_H
+#define SACONE_ICONBAR_H
+
 #include "salib/command.h"
+#include "salib/exception.h"
 #include "salib/iconbar.h"
 #include "salib/mouseclickobserver.h"
 #include "salib/menuselectionobserver.h"
@@ -13,7 +14,7 @@
 
 class IconBarIcon {
 public:
-   IconBarIcon(SALib::Wimp::Task& task);
+   IconBarIcon(SALib::Wimp::Task& task, const char * const iconSpriteName);
    ~IconBarIcon(void);
 
 private:
@@ -41,4 +42,4 @@ private:
    SALib::Wimp::MenuSelectionObserver m_iconBarMenuSelectionObserver;
 };
 
-#endif // ICONBAR_H
+#endif // SACODE_ICONBAR_H

@@ -1,0 +1,20 @@
+//
+// Logs messages to the log file
+//
+
+#ifndef SACODE_LOG_H
+#define SACODE_LOG_H
+
+#include "salib/exception.h"
+
+class LogFile {
+public:
+   LogFile(const char * const filename);
+
+   void LogMessage(const char * const message);
+
+private:
+   char m_filename[256];
+};
+
+#endif // SACODE_LOG_H

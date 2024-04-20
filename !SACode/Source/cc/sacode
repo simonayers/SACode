@@ -2,18 +2,49 @@
 //  Main application entry point.
 //
 
+#include "salib/errormessage.h"
+#include "salib/exception.h"
 #include "salib/task.h"
 
 #include "iconbar.h"
+#include "logfile.h"
+
+const char * const taskName = "SACode";
+const char * const taskIconSprite = "!sacode";
+const char * const logFileName = "<SACode$Dir>.Log";
+
+// TODO - Look this message up from Message file.
+const char * const fatalGenericErrorMessage       = "Sorry, SACode has suffered an internal error and must close down immediately.";
+const char * const recoverableGenericErrorMessage = "Sorry, SACode could not perform that operation.";
 
 int main(int argc, char* argv[])
 {
-   SALib::Wimp::Task task("SACode");
+   LogFile logFile(logFileName);
 
-   IconBarIcon iconBarIcon(task);
+   try {
+      SALib::Wimp::Task task("SACode");
 
-   while (!task.RequestToQuitReceived()) {
-      task.ProcessMessages();
+      IconBarIcon iconBarIcon(task, taskIconSprite);
+
+      SALib::Wimp::ErrorMessage::NonBlockingErrorWindow errorWindow(task, taskName, taskIconSprite);
+
+      while (!task.RequestToQuitReceived()) {
+         try {
+            task.ProcessMessages();
+         } catch (SALib::RecoverableException& e) {
+            logFile.LogMessage(e.GetMessage());
+            (void)errorWindow.ShowContinue(recoverableGenericErrorMessage);
+         }
+      }
+   } catch (SALib::Exception& e) {
+      logFile.LogMessage(e.GetMessage());
+      SALib::Wimp::ErrorMessage::ReportFatal(taskName, taskIconSprite, fatalGenericErrorMessage);
+   } catch (std::exception& e) {
+      logFile.LogMessage(e.what());
+      SALib::Wimp::ErrorMessage::ReportFatal(taskName, taskIconSprite, fatalGenericErrorMessage);
+   } catch (...) {
+      logFile.LogMessage("Unknown exception type thrown.");
+      SALib::Wimp::ErrorMessage::ReportFatal(taskName, taskIconSprite, fatalGenericErrorMessage);
    }
 
    return 0;

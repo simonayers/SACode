@@ -4,10 +4,10 @@
 
 #include "iconbar.h"
 
-IconBarIcon::IconBarIcon(SALib::Wimp::Task& task)
+IconBarIcon::IconBarIcon(SALib::Wimp::Task& task, const char * const iconSpriteName)
    :   m_task(task),
        m_quitItemMenuSelectionCommand(task),
-       m_iconBarIcon(SALib::Wimp::IconBar::RIGHT, "!sacode"),
+       m_iconBarIcon(SALib::Wimp::IconBar::RIGHT, iconSpriteName),
        m_iconBarMenu("SACode"),
        m_iconBarMouseClickObserver(m_nullCommand, m_nullCommand, m_iconBarMenu),
        m_iconBarMenuSelectionObserver(m_iconBarMenu)

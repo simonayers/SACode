@@ -1,0 +1,47 @@
+//
+// Implementation of LogFile class for logging messages to the log file
+//
+
+#include <cstdio>
+#include <ctime>
+#include <fstream>
+#include <iostream>
+#include "logfile.h"
+
+static const char * const GetDateTimeStamp(void)
+{
+   static char dateTimeStamp[25] = {'\0'};
+
+   std::time_t rawTime = { 0 };
+   std::time(&rawTime);
+
+   struct std::tm * utcTime = std::gmtime(&rawTime);
+
+   snprintf(dateTimeStamp, sizeof(dateTimeStamp), "%04d/%02d/%02d %02d:%02d:%02d",
+            utcTime->tm_year + 1900, utcTime->tm_mon + 1, utcTime->tm_mday,
+            utcTime->tm_hour, utcTime->tm_min, utcTime->tm_sec);
+
+   return dateTimeStamp;
+}
+
+LogFile::LogFile(const char * const filename)
+{
+   snprintf(m_filename, sizeof(m_filename), "%s", filename);
+}
+
+void LogFile::LogMessage(const char * const message)
+{
+   char logFileMessage[250] = {'\0'};
+   snprintf(logFileMessage, sizeof(logFileMessage), "%s : %s", GetDateTimeStamp(), message);
+
+   try {
+      std::ofstream outputFileStream;
+      outputFileStream.open(m_filename, std::ofstream::out | std::ofstream::app);
+
+      outputFileStream << logFileMessage << std::endl;
+
+      outputFileStream.close();
+   } catch (...) {
+      // Can't really do anything here.
+   }
+}
