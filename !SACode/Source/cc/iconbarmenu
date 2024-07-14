@@ -1,0 +1,53 @@
+//
+// Implementation of Icon Bar Menu classes
+//
+
+#include "iconbarmenu.h"
+
+
+static SALib::Wimp::MenuEntry BuildMenuEntry(const std::string& itemText,
+                                             const SALib::Wimp::Menu* subMenu,
+                                             const SALib::Wimp::Window* windowSubMenu,
+                                             const bool isLastItem,
+                                             const SALib::Wimp::MenuSelectionCommandBase& menuSelectClickedCommand,
+                                             const SALib::Wimp::MenuSelectionCommandBase& menuAdjustClickedCommand)
+{
+   SALib::Wimp::MenuEntry::MenuFlagsBuilder menuFlagsBuilder;
+   SALib::Wimp::IconFlagsBuilder            iconFlagsBuilder;
+   SALib::Wimp::IconDataBuilder             iconData(itemText);
+
+   menuFlagsBuilder.SetTitleIndirected();
+   if (isLastItem) {
+      menuFlagsBuilder.SetLast();
+   }
+
+   iconFlagsBuilder.SetIconText().SetIconIndirected().SetIconFilled();
+
+   if (!subMenu || windowSubMenu) {
+      return SALib::Wimp::MenuEntry(menuFlagsBuilder, *windowSubMenu, iconFlagsBuilder, iconData,
+                                 menuSelectClickedCommand, menuAdjustClickedCommand);
+   }
+
+   return SALib::Wimp::MenuEntry(menuFlagsBuilder, subMenu, iconFlagsBuilder, iconData,
+                                 menuSelectClickedCommand, menuAdjustClickedCommand);
+}
+
+
+
+IconBarMenu::IconBarMenu(SALib::Wimp::Task& task)
+   :   SALib::Wimp::Menu("SACode"),
+       m_task(task),
+       m_infoWindow(task),
+       m_quitItemMenuSelectionCommand(task),
+       m_iconBarMenuSelectionObserver(*this)
+{
+   AddEntry(BuildMenuEntry("Info", NULL, &m_infoWindow, false,     m_nullMenuSelectionCommand,     m_nullMenuSelectionCommand));
+   AddEntry(BuildMenuEntry("Quit", NULL,          NULL,  true, m_quitItemMenuSelectionCommand, m_quitItemMenuSelectionCommand));
+
+   m_task.GetEventDispatcher().GetMenuSelectionHandlers().Attach(m_iconBarMenuSelectionObserver);
+}
+
+IconBarMenu::~IconBarMenu(void)
+{
+   m_task.GetEventDispatcher().GetMenuSelectionHandlers().Detach(m_iconBarMenuSelectionObserver);
+}

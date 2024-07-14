@@ -103,14 +103,14 @@ InfoWindow::InfoWindow(SALib::Wimp::Task& task)
    :
        SALib::Wimp::Window(BuildWindow(), NULL),
        m_task(task),
-       m_nameLabel(   BuildLabelIcon(0, "Name"),    *this),   // These need to be looked up from Messages
-       m_nameText(    BuildTextIcon( 0, "SACode"),     *this),
-       m_purposeLabel(BuildLabelIcon(1, "Purpose"), *this),
-       m_purposeText( BuildTextIcon( 1, "Code text editor"),  *this),
-       m_authorLabel( BuildLabelIcon(2, "Author"),  *this),
-       m_authorText(  BuildTextIcon( 2, "Simon Ayers"),   *this),
-       m_versionLabel(BuildLabelIcon(3, "Version"), *this),
-       m_versionText( BuildTextIcon( 3, "TBD"),  *this),
+       m_nameLabel(   BuildLabelIcon(0,             "Name"), *this),   // These need to be looked up from Messages
+       m_nameText(    BuildTextIcon( 0,           "SACode"), *this),
+       m_purposeLabel(BuildLabelIcon(1,          "Purpose"), *this),
+       m_purposeText( BuildTextIcon( 1, "Code text editor"), *this),
+       m_authorLabel( BuildLabelIcon(2,           "Author"), *this),
+       m_authorText(  BuildTextIcon( 2,      "Simon Ayers"), *this),
+       m_versionLabel(BuildLabelIcon(3,          "Version"), *this),
+       m_versionText( BuildTextIcon( 3,              "TBD"), *this),
        m_openWindowRequestObserver(*this),
        m_closeWindowRequestObserver(*this)
 {

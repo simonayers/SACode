@@ -5,8 +5,8 @@ CPPFLAGS=-Wall -mlibscl $(INCDIRS) $(OPT)
 LINKFLAGS=-mlibscl
 LINKLIBS=-LOSLib\: -LSALib\:  -lOSLib32 -lSALib
 
-CPPFILES=iconbar.cc infowindow.cc logfile.cc sacode.cc
-OBJECTS= iconbar.o  infowindow.o  logfile.o  sacode.o
+CPPFILES=iconbar.cc iconbarmenu.cc infowindow.cc logfile.cc sacode.cc
+OBJECTS= iconbar.o  iconbarmenu.o  infowindow.o  logfile.o  sacode.o
 
 BINARY=../!RunImage
 

@@ -3,7 +3,7 @@
 //
 
 #ifndef SACODE_ICONBAR_H
-#define SACONE_ICONBAR_H
+#define SACODE_ICONBAR_H
 
 #include "salib/command.h"
 #include "salib/exception.h"
@@ -12,6 +12,8 @@
 #include "salib/menuselectionobserver.h"
 #include "salib/task.h"
 
+#include "iconbarmenu.h"
+
 class IconBarIcon {
 public:
    IconBarIcon(SALib::Wimp::Task& task, const char * const iconSpriteName);
@@ -19,27 +21,14 @@ public:
 
 private:
 
-   class QuitItemMenuSelectionCommand : public SALib::Wimp::MenuSelectionCommandBase {
-   public:
-      QuitItemMenuSelectionCommand(SALib::Wimp::Task& task) : m_task(task) {}
-      virtual ~QuitItemMenuSelectionCommand(void) {}
-
-      virtual void Execute(void) const { m_task.RequestToQuit(); }
-
-   private:
-      SALib::Wimp::Task& m_task;
-   };
-
    SALib::Wimp::Task& m_task;
 
-   QuitItemMenuSelectionCommand m_quitItemMenuSelectionCommand;
-   SALib::Wimp::NullCommand m_nullCommand;
+   SALib::Wimp::NullCommand m_nullCommand;  // TEMPORARY UNTIL CLICK IMPLEMENTED
 
    SALib::Wimp::IconBar m_iconBarIcon;
-   SALib::Wimp::Menu m_iconBarMenu;
+   IconBarMenu m_iconBarMenu;
 
    SALib::Wimp::IconBarMouseClickObserver m_iconBarMouseClickObserver;
-   SALib::Wimp::MenuSelectionObserver m_iconBarMenuSelectionObserver;
 };
 
 #endif // SACODE_ICONBAR_H
