@@ -1,0 +1,125 @@
+#include <string>
+
+#include "salib/colour.h"
+#include "salib/icon.h"
+#include "salib/iconbuilder.h"
+#include "salib/window.h"
+#include "salib/windowbuilder.h"
+
+#include "infowindow.h"
+
+static SALib::Wimp::WindowBuilder BuildWindow(void)
+{
+   const int titleBarHeight = 0;  // Verify this.  Plus it should be figured out programmatically
+   const int clearSpaceHeight = 8;
+   const int maxRowHeight = 52 + clearSpaceHeight;
+   const int windowHeight = (4 * maxRowHeight) + clearSpaceHeight + titleBarHeight;
+
+   const int windowWidth = 638;  // Figure this one out as well!  638 Measured from !Edit
+
+   SALib::Wimp::WindowBuilder::WindowFlagsBuilder windowFlagsBuilder;
+
+   windowFlagsBuilder.SetMovable();
+   windowFlagsBuilder.SetAutoRedraw();
+   windowFlagsBuilder.SetForceWindowToStayOnScreen();
+   windowFlagsBuilder.SetHasTitleBar();
+
+
+   SALib::Wimp::WindowBuilder windowBuilder;
+
+   windowBuilder.SetWindowFlags(windowFlagsBuilder);
+   windowBuilder.SetWindowTitle("About this program");
+
+   windowBuilder.SetWindowExtentWidth(windowWidth);
+   windowBuilder.SetWindowExtentHeight(windowHeight);
+   windowBuilder.SetWindowVisibleWidth(windowWidth);
+   windowBuilder.SetWindowVisibleHeight(windowHeight);
+
+   windowBuilder.SetWindowWorkAreaForegroundColour(SALib::Wimp::Colour::Black);        // Look up from theme
+   windowBuilder.SetWindowWorkAreaBackgroundColour(SALib::Wimp::Colour::VeryLightGrey);
+
+   return windowBuilder;
+}
+
+static SALib::Wimp::IconBuilder BuildLabelIcon(const int rowNumber, const std::string& text)
+{
+   SALib::Wimp::IconBuilder iconBuilder;
+
+   iconBuilder.GetIconFlagsBuilder().SetIconText();
+   iconBuilder.GetIconFlagsBuilder().SetIconIndirected();
+   iconBuilder.GetIconFlagsBuilder().SetIconRJustified();
+   iconBuilder.GetIconFlagsBuilder().SetIconFGColour(SALib::Wimp::Colour::Black);
+   iconBuilder.GetIconFlagsBuilder().SetIconBGColour(SALib::Wimp::Colour::VeryLightGrey);  // Look up from theme
+
+   iconBuilder.GetIconDataBuilder().SetText(text);
+
+   const int iconHeight = 52;
+   const int clearSpaceHeight = 8;
+   const int topEdge = (rowNumber * (iconHeight + clearSpaceHeight)) + clearSpaceHeight;
+
+   const int leftEdge = 8;
+   const int iconWidth = 146;
+
+   SALib::Wimp::Rectangle extentRectangle = { leftEdge, 0 - (topEdge + iconHeight), leftEdge + iconWidth, 0 - topEdge };
+
+   iconBuilder.SetExtent(extentRectangle);
+
+   return iconBuilder;
+}
+
+
+static SALib::Wimp::IconBuilder BuildTextIcon(const int rowNumber, const std::string& text)
+{
+   SALib::Wimp::IconBuilder iconBuilder;
+
+   iconBuilder.GetIconFlagsBuilder().SetIconText();
+   iconBuilder.GetIconFlagsBuilder().SetIconBorder();
+   iconBuilder.GetIconFlagsBuilder().SetIconHCentred();
+   iconBuilder.GetIconFlagsBuilder().SetIconFilled();
+   iconBuilder.GetIconFlagsBuilder().SetIconIndirected();
+   iconBuilder.GetIconFlagsBuilder().SetIconFGColour(SALib::Wimp::Colour::Black);
+   iconBuilder.GetIconFlagsBuilder().SetIconBGColour(SALib::Wimp::Colour::VeryLightGrey);  // Look up from theme
+
+   iconBuilder.GetIconDataBuilder().SetText(text);
+   iconBuilder.GetIconDataBuilder().SetValidation("R2");
+
+   const int iconHeight = 52;
+   const int clearSpaceHeight = 8;
+   const int topEdge = (rowNumber * (iconHeight + clearSpaceHeight)) + clearSpaceHeight;
+                                          
+   const int clearSpaceWidth = 8;
+   const int leftEdge = 146 + clearSpaceWidth;
+   const int iconWidth = 638 - leftEdge - clearSpaceWidth;
+
+   SALib::Wimp::Rectangle extentRectangle = { leftEdge, 0 - (topEdge + iconHeight), leftEdge + iconWidth, 0 - topEdge };
+
+   iconBuilder.SetExtent(extentRectangle);
+
+   return iconBuilder;
+}
+
+
+InfoWindow::InfoWindow(SALib::Wimp::Task& task)
+   :
+       SALib::Wimp::Window(BuildWindow(), NULL),
+       m_task(task),
+       m_nameLabel(   BuildLabelIcon(0, "Name"),    *this),   // These need to be looked up from Messages
+       m_nameText(    BuildTextIcon( 0, "SACode"),     *this),
+       m_purposeLabel(BuildLabelIcon(1, "Purpose"), *this),
+       m_purposeText( BuildTextIcon( 1, "Code text editor"),  *this),
+       m_authorLabel( BuildLabelIcon(2, "Author"),  *this),
+       m_authorText(  BuildTextIcon( 2, "Simon Ayers"),   *this),
+       m_versionLabel(BuildLabelIcon(3, "Version"), *this),
+       m_versionText( BuildTextIcon( 3, "TBD"),  *this),
+       m_openWindowRequestObserver(*this),
+       m_closeWindowRequestObserver(*this)
+{
+   m_task.GetEventDispatcher().GetOpenWindowRequestHandlers().Attach(m_openWindowRequestObserver);
+   m_task.GetEventDispatcher().GetCloseWindowRequestHandlers().Attach(m_closeWindowRequestObserver);
+}
+
+InfoWindow::~InfoWindow(void)
+{
+   m_task.GetEventDispatcher().GetOpenWindowRequestHandlers().Detach(m_openWindowRequestObserver);
+   m_task.GetEventDispatcher().GetCloseWindowRequestHandlers().Detach(m_closeWindowRequestObserver);
+}

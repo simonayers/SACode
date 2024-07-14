@@ -1,0 +1,43 @@
+//
+// Window definition for Info iconbar menu item
+//
+// For the moment we will make the Info window consistent with
+// normal RISC OS applications.  But may make it themeable.
+// That said, I hate the RISC OS 3D style icons so can do
+// better than that, hopefully.
+//
+
+#ifndef SACODE_INFOWINDOW_H
+#define SACODE_INFOWINDOW_H
+
+#include "salib/icon.h"
+#include "salib/task.h"
+#include "salib/window.h"
+#include "salib/windowobserver.h"
+
+
+class InfoWindow : public SALib::Wimp::Window {
+public:
+   InfoWindow(SALib::Wimp::Task& task);
+   virtual ~InfoWindow(void);
+
+private:
+   SALib::Wimp::Task& m_task;
+
+   SALib::Wimp::Icon m_nameLabel;
+   SALib::Wimp::Icon m_nameText;
+
+   SALib::Wimp::Icon m_purposeLabel;
+   SALib::Wimp::Icon m_purposeText;
+
+   SALib::Wimp::Icon m_authorLabel;
+   SALib::Wimp::Icon m_authorText;
+
+   SALib::Wimp::Icon m_versionLabel;
+   SALib::Wimp::Icon m_versionText;
+
+   SALib::Wimp::OpenWindowRequestObserver   m_openWindowRequestObserver;
+   SALib::Wimp::CloseWindowRequestObserver m_closeWindowRequestObserver;
+};
+
+#endif // SACODE_INFOWINDOW_H
